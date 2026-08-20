@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Camilo — QA Automation Engineer</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700&display=block" rel="stylesheet">
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "background": "#131314",
+          "surface": "#161617",
+          "surface-high": "#2a2a2b",
+          "border-muted": "#2A2A2B",
+          "primary": "#00ff41",
+          "primary-dim": "#00e639",
+          "glitch-cyan": "#00F0FF",
+          "on-surface": "#e5e2e3",
+          "on-surface-variant": "#b9ccb2",
+          "terminal-text": "#E0E0E0"
+        },
+        fontFamily: {
+          "display": ["Space Grotesk", "sans-serif"],
+          "mono": ["JetBrains Mono", "monospace"]
+        }
+      }
+    }
+  }
+</script>
+<style>
+  body {
+    background-color: #131314;
+    background-image:
+      linear-gradient(0deg, transparent 24%, rgba(0, 255, 65, 0.025) 25%, rgba(0, 255, 65, 0.025) 26%, transparent 27%, transparent 74%, rgba(0, 255, 65, 0.025) 75%, rgba(0, 255, 65, 0.025) 76%, transparent 77%, transparent),
+      linear-gradient(90deg, transparent 24%, rgba(0, 255, 65, 0.025) 25%, rgba(0, 255, 65, 0.025) 26%, transparent 27%, transparent 74%, rgba(0, 255, 65, 0.025) 75%, rgba(0, 255, 65, 0.025) 76%, transparent 77%, transparent);
+    background-size: 30px 30px;
+  }
+
+  /* Unico efecto protagonista: cursor de terminal en el titular */
+  .blink-cursor::after {
+    content: '_';
+    animation: blink 1.2s step-end infinite;
+    color: #00ff41;
+    margin-left: 4px;
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  /* Foto: escaner horizontal que revela el color (una sola vez) */
+  .portrait-gray { filter: grayscale(90%) contrast(112%); }
+  .portrait-color { clip-path: inset(0 0 100% 0); }
+  .scan-line {
+    position: absolute;
+    left: 0; right: 0; top: 0;
+    height: 2px;
+    background: #00ff41;
+    box-shadow: 0 0 12px #00ff41, 0 0 24px rgba(0, 255, 65, 0.5);
+    opacity: 0;
+  }
+  .scanning .portrait-color {
+    clip-path: inset(0 0 0 0);
+    transition: clip-path 2.4s linear;
+  }
+  .scanning .scan-line {
+    opacity: 1;
+    animation: scan-move 2.4s linear forwards;
+  }
+  @keyframes scan-move {
+    from { top: 0; }
+    to { top: calc(100% - 2px); }
+  }
+  .scan-done .portrait-color { clip-path: inset(0 0 0 0); }
+  .scan-done .scan-line { opacity: 0; transition: opacity 0.4s ease; animation: none; }
+
+  /* Barras de nivel: cargan al entrar en pantalla */
+  .bar-fill { width: 0; }
+  .bars-animated .bar-fill { animation: fill-bar 1.4s ease-out forwards; }
+  @keyframes fill-bar { to { width: var(--target); } }
+
+  /* Filtro horizontal del stack */
+  .filter-btn {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 6px 14px;
+    border: 1px solid #2A2A2B;
+    border-radius: 9999px;
+    color: #b9ccb2;
+    background: #161617;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+  }
+  .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .filter-btn.active {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: #131314;
+    font-weight: 700;
+  }
+
+  /* Cards del stack con acento por categoria */
+  .skill-card { transition: opacity 0.2s ease, transform 0.2s ease, border-color 0.2s ease; }
+  .skill-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .skill-card .bar-fill { background: var(--accent); }
+  .skill-card .bar-pct { color: var(--accent); }
+  .skill-card.card-fade { opacity: 0; transform: scale(0.96); }
+
+  /* SAFE_MODE: apaga todas las animaciones y transiciones */
+  .safe-mode *,
+  .safe-mode *::before,
+  .safe-mode *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .safe-mode body {
+    background-image: none;
+  }
+  .safe-mode .bar-fill {
+    width: var(--target);
+  }
+  .safe-mode .portrait-color { clip-path: inset(0 0 0 0) !important; }
+  .safe-mode .scan-line { display: none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation: none !important;
+      transition: none !important;
+    }
+    .bar-fill { width: var(--target) !important; }
+    .portrait-color { clip-path: inset(0 0 0 0) !important; }
+    .scan-line { display: none; }
+  }
+</style>
+</head>
+<body class="text-on-surface min-h-screen font-mono text-[16px] leading-relaxed overflow-x-hidden selection:bg-primary selection:text-black">
+
+<!-- ============ NAV (compartida en las 3 vistas) ============ -->
+<nav class="fixed top-0 w-full z-50 bg-background/85 backdrop-blur-md border-b border-border-muted">
+  <div class="flex justify-between items-center max-w-[1200px] mx-auto px-6 md:px-10 h-16">
+    <a href="inicio_v2.html" class="font-display font-bold text-lg tracking-tight">
+      <span class="text-glitch-cyan">CAMILO</span><span class="text-on-surface-variant opacity-50">://</span><span class="text-primary">QA</span>
+    </a>
+    <div class="hidden md:flex items-center gap-8 text-[13px] uppercase tracking-widest">
+      <a class="text-primary border-b-2 border-primary pb-1" href="inicio_v2.html">&gt; inicio</a>
+      <a class="text-on-surface-variant hover:text-primary transition-colors" href="experiencia_v2.html">&gt; experiencia</a>
+      <a class="text-on-surface-variant hover:text-primary transition-colors" href="proyectos_v2.html">&gt; proyectos</a>
+      <a class="text-on-surface-variant hover:text-primary transition-colors" href="mailto:camilo@example.com">&gt; contacto</a>
+    </div>
+    <div class="flex items-center gap-3">
+      <button id="safe-mode-toggle" aria-pressed="false" title="Desactiva todas las animaciones"
+        class="text-[11px] uppercase tracking-widest border border-border-muted text-on-surface-variant px-3 py-1.5 rounded hover:border-primary hover:text-primary transition-colors">
+        safe_mode: off
+      </button>
+      <a href="#" download class="hidden md:inline-flex items-center gap-2 bg-primary text-black text-[12px] font-bold uppercase tracking-widest px-4 py-2 rounded hover:bg-primary-dim transition-colors">
+        <span class="material-symbols-outlined text-[16px]">download</span> CV
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="pt-28 pb-24 px-6 md:px-10 max-w-[1200px] mx-auto">
+
+  <!-- ============ HERO ============ -->
+  <section class="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-20 items-center">
+    <div class="lg:col-span-7 flex flex-col gap-6">
+
+      <div class="inline-flex items-center gap-2 px-3 py-1 border border-primary/50 rounded bg-surface w-max">
+        <span class="w-2 h-2 rounded-full bg-primary"></span>
+        <span class="text-[13px] text-primary">disponible para nuevos proyectos</span>
+      </div>
+
+      <div>
+        <p class="text-[14px] text-primary mb-2">&gt; identificación</p>
+        <h1 class="font-display font-bold text-5xl tracking-tight leading-none mb-3">Soy Camilo</h1>
+        <p class="font-display font-bold text-2xl md:text-3xl text-glitch-cyan blink-cursor">QA Automation Engineer</p>
+      </div>
+
+      <!-- Datos rapidos para quien dedica 20 segundos -->
+      <ul class="flex flex-wrap gap-2 text-[12px] uppercase tracking-widest">
+        <li class="border border-border-muted bg-surface px-3 py-1.5 rounded text-on-surface-variant">+7 años de experiencia</li>
+        <li class="border border-border-muted bg-surface px-3 py-1.5 rounded text-on-surface-variant">España · Remoto</li>
+        <li class="border border-border-muted bg-surface px-3 py-1.5 rounded text-on-surface-variant">ES / EN</li>
+        <li class="border border-border-muted bg-surface px-3 py-1.5 rounded text-on-surface-variant">E2E · API · CI/CD</li>
+      </ul>
+
+      <div class="bg-surface border border-border-muted rounded-lg overflow-hidden">
+        <div class="flex items-center justify-between border-b border-border-muted px-4 py-2">
+          <span class="text-[12px] uppercase tracking-widest text-on-surface-variant">bio.txt</span>
+          <div class="flex gap-1.5">
+            <div class="w-2.5 h-2.5 rounded-full bg-border-muted"></div>
+            <div class="w-2.5 h-2.5 rounded-full bg-border-muted"></div>
+            <div class="w-2.5 h-2.5 rounded-full bg-border-muted"></div>
+          </div>
+        </div>
+        <p class="p-6 text-terminal-text text-[15px] leading-relaxed">
+          &gt; Profesional del aseguramiento de la calidad con experiencia en el ciclo de vida completo de las pruebas.<br><br>
+          &gt; Trabajo con Cypress, Playwright, Karate DSL y Selenium para garantizar que los productos cumplan los más altos estándares de calidad.<br><br>
+          &gt; Hoy integro la IA en mi día a día —skills propias, MCPs y agentes— con un objetivo claro: que las releases lleguen más rápido a producción sin renunciar a la calidad.
+        </p>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-4 mt-2">
+        <a href="#" download class="inline-flex items-center justify-center gap-2 bg-primary text-black font-bold text-[13px] uppercase tracking-widest py-4 px-8 rounded hover:bg-primary-dim transition-colors">
+          <span class="material-symbols-outlined text-[18px]">download</span>
+          Descargar CV
+        </a>
+        <a href="proyectos_v2.html" class="inline-flex items-center justify-center gap-2 border border-primary/60 text-primary font-bold text-[13px] uppercase tracking-widest py-4 px-8 rounded hover:bg-primary/10 transition-colors">
+          <span class="material-symbols-outlined text-[18px]">play_arrow</span>
+          Ver proyectos
+        </a>
+      </div>
+    </div>
+
+    <!-- Foto -->
+    <div class="lg:col-span-5 relative flex justify-center lg:justify-end mt-8 lg:mt-0">
+      <div id="id-photo" class="relative w-72 h-72 md:w-96 md:h-96">
+        <div class="absolute inset-0 border border-primary/40 z-10 pointer-events-none rounded"></div>
+        <div class="absolute -top-1 -left-1 w-4 h-4 border-t-2 border-l-2 border-primary z-20"></div>
+        <div class="absolute -top-1 -right-1 w-4 h-4 border-t-2 border-r-2 border-primary z-20"></div>
+        <div class="absolute -bottom-1 -left-1 w-4 h-4 border-b-2 border-l-2 border-primary z-20"></div>
+        <div class="absolute -bottom-1 -right-1 w-4 h-4 border-b-2 border-r-2 border-primary z-20"></div>
+        <div class="absolute inset-0 overflow-hidden rounded">
+          <img alt="" aria-hidden="true" class="absolute inset-0 w-full h-full object-cover portrait-gray" src="https://lh3.googleusercontent.com/aida/AEtjO1UOTUuwxKQOS2ixkupRg2kP4U33KM-fYT1SreF74sQmbOMSazjdLrpGIr_vxgW-vwoDl32k4j-l58NTWNENBVJD5_WZ0mIKD11y1xn-lUf0pn33-KJ-1Qc7Y6mM0cvLl4DjLW3Qv01wmeeI5BQMTGsebucLno-ktXyhaeYTjepmk_SD8idVurcofLejOo4DWGz9fPGAlMaC5xi57fi2uMUvXyvpDub3rmVHM9WsJBZFPMjucS0K2VpAXVyq">
+          <img alt="Retrato de Camilo" class="absolute inset-0 w-full h-full object-cover portrait-color" src="https://lh3.googleusercontent.com/aida/AEtjO1UOTUuwxKQOS2ixkupRg2kP4U33KM-fYT1SreF74sQmbOMSazjdLrpGIr_vxgW-vwoDl32k4j-l58NTWNENBVJD5_WZ0mIKD11y1xn-lUf0pn33-KJ-1Qc7Y6mM0cvLl4DjLW3Qv01wmeeI5BQMTGsebucLno-ktXyhaeYTjepmk_SD8idVurcofLejOo4DWGz9fPGAlMaC5xi57fi2uMUvXyvpDub3rmVHM9WsJBZFPMjucS0K2VpAXVyq">
+          <div class="scan-line"></div>
+        </div>
+        <div class="absolute bottom-2 right-2 bg-background/85 px-2 py-1 z-30 border border-primary/30 rounded">
+          <span id="id-label" class="text-[10px] text-primary tracking-widest">SYS_OP: CAMILO_01</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ STACK (con filtro horizontal) ============ -->
+  <section id="stack" class="mb-20">
+    <h2 class="font-display font-semibold text-2xl mb-6 border-b border-border-muted pb-4 flex items-center gap-3">
+      <span class="material-symbols-outlined text-primary">construction</span>
+      stack_principal
+    </h2>
+
+    <!-- Filtro horizontal -->
+    <div class="flex items-center gap-2 overflow-x-auto pb-2 mb-3" role="group" aria-label="Filtrar tecnologías">
+      <span class="text-[12px] text-on-surface-variant uppercase tracking-widest shrink-0">&gt; filtrar:</span>
+      <button class="filter-btn active" data-filter="todos" style="--accent:#00ff41">todos</button>
+      <button class="filter-btn" data-filter="frontend" style="--accent:#00ff41">frontend</button>
+      <button class="filter-btn" data-filter="backend" style="--accent:#00F0FF">backend</button>
+      <button class="filter-btn" data-filter="ia" style="--accent:#e7bf99">ia</button>
+    </div>
+    <p id="filter-count" class="text-[11px] text-on-surface-variant/70 mb-6 uppercase tracking-widest">&gt; mostrando 10 nodos</p>
+
+    <div id="stack-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+      <div class="skill-card relative bg-surface border border-border-muted rounded p-5" data-category="frontend" style="--accent:#00ff41">
+        <div class="absolute top-2 right-2 flex gap-1"><span class="w-1.5 h-1.5 rounded-full" style="background:#00ff41" title="frontend"></span></div>
+        <div class="flex flex-col items-center text-center gap-2">
+          <span class="material-symbols-outlined text-3xl text-on-surface-variant">bug_report</span>
+          <h3 class="text-[13px] font-bold uppercase tracking-widest">Cypress</h3>
+          <p class="text-[11px] text-on-surface-variant">Lideré la POC que migró el testing legacy de Signaturit</p>
+          <div class="w-full h-1 bg-surface-high rounded overflow-hidden mt-1">
+            <div class="bar-fill h-full rounded" style="--target:90%"></div>
+          </div>
+          <span class="bar-pct text-[11px] tracking-widest" data-target="90">0%</span>
+        </div>
+      </div>
+      <div class="skill-card relative bg-surface border border-border-muted rounded p-5" data-category="frontend backend" style="--accent:#00ff41">
+        <div class="absolute top-2 right-2 flex gap-1"><span class="w-1.5 h-1.5 rounded-full" style="background:#00ff41" title="frontend backend"></span><span class="w-1.5 h-1.5 rounded-full" style="background:#00F0FF" title="frontend backend"></span></div>
+        <div class="flex flex-col items-center text-center gap-2">
+          <span class="material-symbols-outlined text-3xl text-on-surface-variant">theater_comedy</span>
+          <h3 class="text-[13px] font-bold uppercase tracking-widest">Playwright</h3>
+          <p class="text-[11px] text-on-surface-variant">Suites E2E de flujos críticos en producción (Cognizant)</p>
+          <div class="w-full h-1 bg-surface-high rounded overflow-hidden mt-1">
+            <div class="bar-fill h-full rounded" style="--target:85%"></div>
+          </div>
+          <span class="bar-pct text-[11px] tracking-widest" data-target="85">0%</span>
+        </div>
+      </div>
+      <div class="skill-card relative bg-surface border border-border-muted rounded p-5" data-category="frontend" style="--accent:#00ff41">
+        <div class="absolute top-2 right-2 flex gap-1"><span class="w-1.5 h-1.5 rounded-full" style="background:#00ff41" title="frontend"></span></div>
+        <div class="flex flex-col items-center text-center gap-2">
+          <span class="material-symbols-outlined text-3xl text-on-surface-variant">web</span>
+          <h3 class="text-[13px] font-bold uppercase tracking-widest">Selenium</h3>
+          <p class="text-[11px] text-on-surface-variant">Mi primer framework de automatización (Gfi)</p>
+          <div class="w-full h-1 bg-surface-high rounded overflow-hidden mt-1">
+            <div class="bar-fill h-full rounded" style="--target:75%"></div>
+          </div>
+          <span class="bar-pct text-[11px] tracking-widest" data-target="75">0%</span>
+        </div>
+      </div>
+      <div class="skill-card relative bg-surface border border-border-muted rounded p-5" data-category="frontend" style="--accent:#00ff41">
+        <div class="absolute top-2 right-2 flex gap-1"><span class="w-1.5 h-1.5 rounded-full" style="background:#00ff41" title="frontend"></span></div>
+        <div class="flex flex-col items-center text-center gap-2">
+          <span class="material-symbols-outlined text-3xl text-on-surface-variant">hub</span>
+          <h3 class="text-[13px] font-bold uppercase tracking-widest">WebdriverIO</h3>
+          <p class="text-[11px] text-on-surface-variant">Cross-browser y mobile automation con Appium</p>
+          <div class="w-full h-1 bg-surface-high rounded overflow-hidden mt-1">
+            <div class="bar-fill h-full rounded" style="--target:60%"></div>
+          </div>
+          <span class="bar-pct text-[11px] tracking-widest" data-target="60">0%</span>
+        </div>
+      </div>
+      <div class="skill-card relative bg-surface border border-border-muted rounded p-5" data-category="backend" style="--accent:#00F0FF">
+        <div class="absolute top-2 right-2 flex gap-1"><span class="w-1.5 h-1.5 rounded-full" style="background:#00F0FF" title="backend"></span></div>
+        <div class="flex flex-col items-center text-center gap-2">
+          <span class="material-symbols-outlined text-3xl text-on-surface-variant">send</span>
+          <h3 class="text-[13px] font-bold uppercase tracking-widest">Postman</h3>
+          <p class="text-[11px] text-on-surface-variant">Pruebas funcionales y de contrato sobre APIs REST</p>
+          <div class="w-full h-1 bg-surface-high rounded overflow-hidden mt-1">
+            <div class="bar-fill h-full rounded" style="--target:85%"></div>
+          </div>
+          <span class="bar-pct text-[11px] tracking-widest" data-target="85">0%</span>
+        </div>
+      </div>
+      <div class="skill-card relative bg-surface border border-border-muted rounded p-5" data-category="backend" style="--accent:#00F0FF">
+        <div class="absolute top-2 right-2 flex gap-1"><span class="w-1.5 h-1.5 rounded-full" style="background:#00F0FF" title="backend"></span></div>
+        <div class="flex flex-col items-center text-center gap-2">
+          <span class="material-symbols-outlined text-3xl text-on-surface-variant">api</span>
+          <h3 class="text-[13px] font-bold uppercase tracking-widest">Karate DSL</h3>
+          <p class="text-[11px] text-on-surface-variant">Framework de API + pruebas de carga con Gatling</p>
+          <div class="w-full h-1 bg-surface-high rounded overflow-hidden mt-1">
+            <div class="bar-fill h-full rounded" style="--target:80%"></div>
+          </div>
+          <span class="bar-pct text-[11px] tracking-widest" data-target="80">0%</span>
+        </div>
+      </div>
+      <div class="skill-card relative bg-surface border border-border-muted rounded p-5" data-category="ia" style="--accent:#e7bf99">
+        <div class="absolute top-2 right-2 flex gap-1"><span class="w-1.5 h-1.5 rounded-full" style="background:#e7bf99" title="ia"></span></div>
+        <div class="flex flex-col items-center text-center gap-2">
+          <span class="material-symbols-outlined text-3xl text-on-surface-variant">terminal</span>
+          <h3 class="text-[13px] font-bold uppercase tracking-widest">OpenCode</h3>
+          <p class="text-[11px] text-on-surface-variant">Me he creado mis propias skills y agentes que escriben tests por mí</p>
+          <div class="w-full h-1 bg-surface-high rounded overflow-hidden mt-1">
+            <div class="bar-fill h-full rounded" style="--target:90%"></div>
+          </div>
+          <span class="bar-pct text-[11px] tracking-widest" data-target="90">0%</span>
+        </div>
+      </div>
+      <div class="skill-card relative bg-surface border border-border-muted rounded p-5" data-category="ia" style="--accent:#e7bf99">
+        <div class="absolute top-2 right-2 flex gap-1"><span class="w-1.5 h-1.5 rounded-full" style="background:#e7bf99" title="ia"></span></div>
+        <div class="flex flex-col items-center text-center gap-2">
+          <span class="material-symbols-outlined text-3xl text-on-surface-variant">psychology</span>
+          <h3 class="text-[13px] font-bold uppercase tracking-widest">Claude Code</h3>
+          <p class="text-[11px] text-on-surface-variant">Conecto MCPs a mi stack: del requerimiento al test en minutos</p>
+          <div class="w-full h-1 bg-surface-high rounded overflow-hidden mt-1">
+            <div class="bar-fill h-full rounded" style="--target:85%"></div>
+          </div>
+          <span class="bar-pct text-[11px] tracking-widest" data-target="85">0%</span>
+        </div>
+      </div>
+      <div class="skill-card relative bg-surface border border-border-muted rounded p-5" data-category="ia" style="--accent:#e7bf99">
+        <div class="absolute top-2 right-2 flex gap-1"><span class="w-1.5 h-1.5 rounded-full" style="background:#e7bf99" title="ia"></span></div>
+        <div class="flex flex-col items-center text-center gap-2">
+          <span class="material-symbols-outlined text-3xl text-on-surface-variant">smart_toy</span>
+          <h3 class="text-[13px] font-bold uppercase tracking-widest">GitHub Copilot</h3>
+          <p class="text-[11px] text-on-surface-variant">Mi copiloto diario: menos boilerplate, más tiempo para pensar en calidad</p>
+          <div class="w-full h-1 bg-surface-high rounded overflow-hidden mt-1">
+            <div class="bar-fill h-full rounded" style="--target:80%"></div>
+          </div>
+          <span class="bar-pct text-[11px] tracking-widest" data-target="80">0%</span>
+        </div>
+      </div>
+      <div class="skill-card relative bg-surface border border-border-muted rounded p-5" data-category="ia" style="--accent:#e7bf99">
+        <div class="absolute top-2 right-2 flex gap-1"><span class="w-1.5 h-1.5 rounded-full" style="background:#e7bf99" title="ia"></span></div>
+        <div class="flex flex-col items-center text-center gap-2">
+          <span class="material-symbols-outlined text-3xl text-on-surface-variant">rocket_launch</span>
+          <h3 class="text-[13px] font-bold uppercase tracking-widest">Antigravity</h3>
+          <p class="text-[11px] text-on-surface-variant">Exploro flujos agénticos para que las releases lleguen antes a producción</p>
+          <div class="w-full h-1 bg-surface-high rounded overflow-hidden mt-1">
+            <div class="bar-fill h-full rounded" style="--target:65%"></div>
+          </div>
+          <span class="bar-pct text-[11px] tracking-widest" data-target="65">0%</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ FOOTER (compartido) ============ -->
+<footer class="border-t border-border-muted py-8 px-6 md:px-10 bg-[#0e0e0f]">
+  <div class="max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+    <div class="flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-primary"></span>
+      <span class="text-[13px] text-on-surface-variant">Todos los sistemas operativos</span>
+    </div>
+    <div class="flex gap-6 text-[12px] uppercase tracking-widest">
+      <a class="text-on-surface-variant hover:text-primary transition-colors" href="mailto:camilo@example.com">email</a>
+      <a class="text-on-surface-variant hover:text-primary transition-colors" href="#">github</a>
+      <a class="text-on-surface-variant hover:text-primary transition-colors" href="#">linkedin</a>
+    </div>
+    <div class="text-[11px] text-on-surface-variant/60">© 2026 Camilo — QA Automation</div>
+  </div>
+</footer>
+
+<script>
+  // SAFE_MODE: un QA testea su propia web. Apaga todas las animaciones.
+  const toggle = document.getElementById('safe-mode-toggle');
+  toggle.addEventListener('click', () => {
+    const active = document.documentElement.classList.toggle('safe-mode');
+    toggle.textContent = active ? 'safe_mode: on' : 'safe_mode: off';
+    toggle.setAttribute('aria-pressed', active);
+    if (active) document.getElementById('id-photo').classList.add('scan-done');
+  });
+
+  // Barras de nivel: cargan cuando la seccion entra en pantalla
+  const stack = document.getElementById('stack');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function setBarsInstant() {
+    document.querySelectorAll('.bar-pct').forEach(el => {
+      el.textContent = el.dataset.target + '%';
+    });
+  }
+
+  function animateBars() {
+    stack.classList.add('bars-animated');
+    document.querySelectorAll('.bar-pct').forEach(el => {
+      const target = +el.dataset.target;
+      const duration = 1400;
+      const start = performance.now();
+      (function tick(now) {
+        const p = Math.min((now - start) / duration, 1);
+        el.textContent = Math.round(target * p) + '%';
+        if (p < 1) requestAnimationFrame(tick);
+      })(start);
+    });
+  }
+
+  if (reduceMotion) {
+    stack.classList.add('bars-animated');
+    setBarsInstant();
+  } else {
+    const io = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        if (document.documentElement.classList.contains('safe-mode')) {
+          setBarsInstant();
+        } else {
+          animateBars();
+        }
+        io.disconnect();
+      }
+    }, { threshold: 0.3 });
+    io.observe(stack);
+  }
+
+  // Filtro horizontal de tecnologias
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const cards = document.querySelectorAll('.skill-card');
+  const filterCount = document.getElementById('filter-count');
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const cat = btn.dataset.filter;
+      let visible = 0;
+      cards.forEach(card => {
+        const match = cat === 'todos' || card.dataset.category.split(' ').includes(cat);
+        if (match) {
+          visible++;
+          card.classList.remove('hidden');
+          void card.offsetWidth; // reinicia la transicion
+          card.classList.remove('card-fade');
+        } else {
+          card.classList.add('card-fade');
+          setTimeout(() => {
+            if (card.classList.contains('card-fade')) card.classList.add('hidden');
+          }, 200);
+        }
+      });
+      filterCount.textContent = '> mostrando ' + visible + ' nodos';
+    });
+  });
+
+  // Foto: escaneo de identificacion -> revela el color una vez
+  const photo = document.getElementById('id-photo');
+  const idLabel = document.getElementById('id-label');
+  if (reduceMotion) {
+    photo.classList.add('scan-done');
+    idLabel.textContent = 'SYS_OP: CAMILO_01 [OK]';
+  } else {
+    setTimeout(() => photo.classList.add('scanning'), 500);
+    setTimeout(() => {
+      photo.classList.add('scan-done');
+      idLabel.textContent = 'SYS_OP: CAMILO_01 [OK]';
+    }, 3100);
+  }
+</script>
+</body>
+</html>

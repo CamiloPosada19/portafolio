@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Experiencia — Camilo · QA Automation</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700&display=block" rel="stylesheet">
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "background": "#131314",
+          "surface": "#161617",
+          "surface-high": "#2a2a2b",
+          "border-muted": "#2A2A2B",
+          "primary": "#00ff41",
+          "primary-dim": "#00e639",
+          "glitch-cyan": "#00F0FF",
+          "on-surface": "#e5e2e3",
+          "on-surface-variant": "#b9ccb2",
+          "terminal-text": "#E0E0E0",
+          "accent-warm": "#e7bf99"
+        },
+        fontFamily: {
+          "display": ["Space Grotesk", "sans-serif"],
+          "mono": ["JetBrains Mono", "monospace"]
+        }
+      }
+    }
+  }
+</script>
+<style>
+  body {
+    background-color: #131314;
+    background-image:
+      linear-gradient(0deg, transparent 24%, rgba(0, 255, 65, 0.025) 25%, rgba(0, 255, 65, 0.025) 26%, transparent 27%, transparent 74%, rgba(0, 255, 65, 0.025) 75%, rgba(0, 255, 65, 0.025) 76%, transparent 77%, transparent),
+      linear-gradient(90deg, transparent 24%, rgba(0, 255, 65, 0.025) 25%, rgba(0, 255, 65, 0.025) 26%, transparent 27%, transparent 74%, rgba(0, 255, 65, 0.025) 75%, rgba(0, 255, 65, 0.025) 76%, transparent 77%, transparent);
+    background-size: 30px 30px;
+  }
+
+  .blink-cursor::after {
+    content: '_';
+    animation: blink 1.2s step-end infinite;
+    color: #00ff41;
+    margin-left: 4px;
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  .safe-mode *,
+  .safe-mode *::before,
+  .safe-mode *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .safe-mode body {
+    background-image: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+</style>
+</head>
+<body class="text-on-surface min-h-screen font-mono text-[16px] leading-relaxed overflow-x-hidden selection:bg-primary selection:text-black">
+
+<!-- ============ NAV (compartida) ============ -->
+<nav class="fixed top-0 w-full z-50 bg-background/85 backdrop-blur-md border-b border-border-muted">
+  <div class="flex justify-between items-center max-w-[1200px] mx-auto px-6 md:px-10 h-16">
+    <a href="inicio_v2.html" class="font-display font-bold text-lg tracking-tight">
+      <span class="text-glitch-cyan">CAMILO</span><span class="text-on-surface-variant opacity-50">://</span><span class="text-primary">QA</span>
+    </a>
+    <div class="hidden md:flex items-center gap-8 text-[13px] uppercase tracking-widest">
+      <a class="text-on-surface-variant hover:text-primary transition-colors" href="inicio_v2.html">&gt; inicio</a>
+      <a class="text-primary border-b-2 border-primary pb-1" href="experiencia_v2.html">&gt; experiencia</a>
+      <a class="text-on-surface-variant hover:text-primary transition-colors" href="proyectos_v2.html">&gt; proyectos</a>
+      <a class="text-on-surface-variant hover:text-primary transition-colors" href="mailto:camilo@example.com">&gt; contacto</a>
+    </div>
+    <div class="flex items-center gap-3">
+      <button id="safe-mode-toggle" aria-pressed="false" title="Desactiva todas las animaciones"
+        class="text-[11px] uppercase tracking-widest border border-border-muted text-on-surface-variant px-3 py-1.5 rounded hover:border-primary hover:text-primary transition-colors">
+        safe_mode: off
+      </button>
+      <a href="#" download class="hidden md:inline-flex items-center gap-2 bg-primary text-black text-[12px] font-bold uppercase tracking-widest px-4 py-2 rounded hover:bg-primary-dim transition-colors">
+        <span class="material-symbols-outlined text-[16px]">download</span> CV
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="pt-28 pb-24 px-6 md:px-10 max-w-[1200px] mx-auto">
+
+  <header class="mb-16 text-center md:text-left">
+    <h1 class="font-display font-bold text-4xl md:text-5xl text-primary mb-4">&gt; trayectoria<span class="blink-cursor"></span></h1>
+    <p class="text-[13px] text-on-surface-variant uppercase tracking-widest">[+7 años · 5 empresas · del testing manual a la automatización con IA]</p>
+  </header>
+
+  <!-- Timeline -->
+  <div class="relative">
+    <div class="absolute left-1/2 top-0 bottom-0 w-px bg-border-muted transform -translate-x-1/2 hidden md:block"></div>
+
+    <!-- Nodo 1: Cognizant (actual) -->
+    <div class="relative w-full flex flex-col md:flex-row items-center mb-20">
+      <div class="hidden md:block absolute left-1/2 top-1/2 w-3 h-3 rounded-full bg-primary transform -translate-x-1/2 -translate-y-1/2 z-10"></div>
+      <div class="w-full md:w-1/2 md:pr-16 text-center md:text-right flex flex-col items-center md:items-end mb-8 md:mb-0">
+        <h3 class="font-display font-bold text-2xl md:text-3xl mb-2">Cognizant</h3>
+        <p class="text-[13px] text-glitch-cyan mb-4">[ Sept. 2023 – Presente | España, Remoto ]</p>
+        <div class="flex gap-3 justify-center md:justify-end flex-wrap">
+          <span class="border border-primary text-primary text-[11px] uppercase tracking-widest px-3 py-1 bg-primary/10 rounded">en curso</span>
+          <span class="border border-accent-warm/60 text-accent-warm text-[11px] uppercase tracking-widest px-3 py-1 rounded">IA aplicada</span>
+        </div>
+      </div>
+      <div class="w-full md:w-1/2 md:pl-16">
+        <div class="bg-surface border border-primary/50 rounded-lg overflow-hidden shadow-[0_0_15px_rgba(0,255,65,0.15)]">
+          <div class="bg-surface-high border-b border-border-muted px-4 py-2 flex items-center gap-3">
+            <div class="flex gap-1.5">
+              <div class="w-2.5 h-2.5 rounded-full bg-[#ff5f57]"></div>
+              <div class="w-2.5 h-2.5 rounded-full bg-[#febc2e]"></div>
+              <div class="w-2.5 h-2.5 rounded-full bg-[#28c840]"></div>
+            </div>
+            <span class="text-[12px] text-on-surface-variant">&gt; cognizant_qa_lead.sh</span>
+          </div>
+          <ul class="p-6 space-y-4 text-[15px]">
+            <li class="flex gap-3 items-start"><span class="text-primary font-bold">&gt;</span><span>Ejecución de pruebas de caja negra end-to-end a nivel de API y móvil.</span></li>
+            <li class="flex gap-3 items-start"><span class="text-primary font-bold">&gt;</span><span>Construcción de tests automatizados escalables con Karate DSL, Cypress y Playwright.</span></li>
+            <li class="flex gap-3 items-start"><span class="text-primary font-bold">&gt;</span><span>Entrega de métricas de calidad a stakeholders mediante Power BI y SonarCloud.</span></li>
+            <li class="flex gap-3 items-start"><span class="text-primary font-bold">&gt;</span><span>Reducción de tiempos de regresión automatizando flujos críticos.</span></li>
+            <li class="flex gap-3 items-start"><span class="text-primary font-bold">&gt;</span><span>Evaluación y adopción de IA generativa para acelerar la cobertura de pruebas.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nodo 2: Signaturit -->
+    <div class="relative w-full flex flex-col md:flex-row-reverse items-center mb-20">
+      <div class="hidden md:block absolute left-1/2 top-1/2 w-3 h-3 rounded-full bg-surface-high border-2 border-border-muted transform -translate-x-1/2 -translate-y-1/2 z-10"></div>
+      <div class="w-full md:w-1/2 md:pl-16 text-center md:text-left flex flex-col items-center md:items-start mb-8 md:mb-0">
+        <h3 class="font-display font-bold text-2xl md:text-3xl mb-2">Signaturit</h3>
+        <p class="text-[13px] text-on-surface-variant mb-4">[ Sept. 2022 – Sept. 2023 | España, Remoto ]</p>
+        <span class="border border-border-muted text-on-surface-variant text-[11px] uppercase tracking-widest px-3 py-1 rounded">completado</span>
+      </div>
+      <div class="w-full md:w-1/2 md:pr-16">
+        <div class="bg-surface border border-border-muted rounded-lg overflow-hidden hover:border-primary/40 transition-colors">
+          <div class="bg-surface-high border-b border-border-muted px-4 py-2 flex items-center gap-3">
+            <div class="flex gap-1.5">
+              <div class="w-2.5 h-2.5 rounded-full bg-border-muted"></div>
+              <div class="w-2.5 h-2.5 rounded-full bg-border-muted"></div>
+              <div class="w-2.5 h-2.5 rounded-full bg-border-muted"></div>
+            </div>
+            <span class="text-[12px] text-on-surface-variant">&gt; signaturit_automation.sh</span>
+          </div>
+          <ul class="p-6 space-y-4 text-[15px]">
+            <li class="flex gap-3 items-start"><span class="text-primary font-bold">&gt;</span><span>Diseño y mantenimiento de suites de pruebas de API y E2E para una plataforma SaaS de firma electrónica.</span></li>
+            <li class="flex gap-3 items-start"><span class="text-primary font-bold">&gt;</span><span>Lideré una POC con Cypress que habilitó la migración desde herramientas de testing heredadas.</span></li>
+            <li class="flex gap-3 items-start"><span class="text-primary font-bold">&gt;</span><span>Automatización de pipelines de reportes con Cucumber Reports.</span></li>
+            <li class="flex gap-3 items-start"><span class="text-primary font-bold">&gt;</span><span>Colaboración en ceremonias Agile para adelantar la calidad al inicio del ciclo.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nodo 3: Qaracter -->
+    <div class="relative w-full flex flex-col md:flex-row items-center mb-20">
+      <div class="hidden md:block absolute left-1/2 top-1/2 w-3 h-3 rounded-full bg-surface-high border-2 border-border-muted transform -translate-x-1/2 -translate-y-1/2 z-10"></div>
+      <div class="w-full md:w-1/2 md:pr-16 text-center md:text-right flex flex-col items-center md:items-end mb-8 md:mb-0">
+        <h3 class="font-display font-bold text-2xl md:text-3xl mb-2">Qaracter</h3>
+        <p class="text-[13px] text-on-surface-variant mb-4">[ Feb. 2022 – Sept. 2022 | España, Remoto ]</p>
+        <span class="border border-border-muted text-on-surface-variant text-[11px] uppercase tracking-widest px-3 py-1 rounded">completado</span>
+      </div>
+      <div class="w-full md:w-1/2 md:pl-16">
+        <div class="bg-surface border border-border-muted rounded-lg overflow-hidden hover:border-primary/40 transition-colors">
+          <div class="bg-surface-high border-b border-border-muted px-4 py-2 flex items-center gap-3">
+            <div class="flex gap-1.5">
+              <div class="w-2.5 h-2.5 rounded-full bg-border-muted"></div>
+              <div class="w-2.5 h-2.5 rounded-full bg-border-muted"></div>
+              <div class="w-2.5 h-2.5 rounded-full bg-border-muted"></div>
+            </div>
+            <span class="text-[12px] text-on-surface-variant">&gt; qaracter_qa_analyst.sh</span>
+          </div>
+          <ul class="p-6 space-y-4 text-[15px]">
+            <li class="flex gap-3 items-start"><span class="text-primary font-bold">&gt;</span><span>Automatización de pruebas de regresión de API con Python + Requests, reduciendo el esfuerzo manual.</span></li>
+            <li class="flex gap-3 items-start"><span class="text-primary font-bold">&gt;</span><span>Pruebas funcionales y de caja negra sobre APIs REST usando Postman.</span></li>
+            <li class="flex gap-3 items-start"><span class="text-primary font-bold">&gt;</span><span>Gestión del seguimiento de defectos y reportes de sprint en JIRA.</span></li>
+            <li class="flex gap-3 items-start"><span class="text-primary font-bold">&gt;</span><span>Validación de integridad de datos con consultas SQL.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nodo 4: Inetum -->
+    <div class="relative w-full flex flex-col md:flex-row-reverse items-center mb-20">
+      <div class="hidden md:block absolute left-1/2 top-1/2 w-3 h-3 rounded-full bg-surface-high border-2 border-border-muted transform -translate-x-1/2 -translate-y-1/2 z-10"></div>
+      <div class="w-full md:w-1/2 md:pl-16 text-center md:text-left flex flex-col items-center md:items-start mb-8 md:mb-0">
+        <h3 class="font-display font-bold text-2xl md:text-3xl mb-2">Inetum</h3>
+        <p class="text-[13px] text-on-surface-variant mb-4">[ Oct. 2020 – Feb. 2022 | Alicante, España ]</p>
+        <span class="border border-border-muted text-on-surface-variant text-[11px] uppercase tracking-widest px-3 py-1 rounded">completado</span>
+      </div>
+      <div class="w-full md:w-1/2 md:pr-16">
+        <div class="bg-surface border border-border-muted rounded-lg overflow-hidden hover:border-primary/40 transition-colors">
+          <div class="bg-surface-high border-b border-border-muted px-4 py-2 flex items-center gap-3">
+            <div class="flex gap-1.5">
+              <div class="w-2.5 h-2.5 rounded-full bg-border-muted"></div>
+              <div class="w-2.5 h-2.5 rounded-full bg-border-muted"></div>
+              <div class="w-2.5 h-2.5 rounded-full bg-border-muted"></div>
+            </div>
+            <span class="text-[12px] text-on-surface-variant">&gt; inetum_junior_tester.sh</span>
+          </div>
+          <ul class="p-6 space-y-4 text-[15px]">
+            <li class="flex gap-3 items-start"><span class="text-primary font-bold">&gt;</span><span>Automatización de flujos web end-to-end con Cypress + Cucumber en entorno Agile.</span></li>
+            <li class="flex gap-3 items-start"><span class="text-primary font-bold">&gt;</span><span>Generación de reportes enriquecidos con Mocha Awesome.</span></li>
+            <li class="flex gap-3 items-start"><span class="text-primary font-bold">&gt;</span><span>Pruebas funcionales y de caja negra a nivel de API en múltiples proyectos.</span></li>
+            <li class="flex gap-3 items-start"><span class="text-primary font-bold">&gt;</span><span>Contribución a los procesos de calidad siguiendo Agile/Scrum.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nodo 5: Gfi -->
+    <div class="relative w-full flex flex-col md:flex-row items-center mb-12">
+      <div class="hidden md:block absolute left-1/2 top-1/2 w-3 h-3 rounded-full bg-surface-high border-2 border-border-muted transform -translate-x-1/2 -translate-y-1/2 z-10"></div>
+      <div class="w-full md:w-1/2 md:pr-16 text-center md:text-right flex flex-col items-center md:items-end mb-8 md:mb-0">
+        <h3 class="font-display font-bold text-2xl md:text-3xl mb-2">Gfi España</h3>
+        <p class="text-[13px] text-on-surface-variant mb-4">[ Ago. 2018 – Oct. 2020 | Alicante, España ]</p>
+        <span class="border border-border-muted text-on-surface-variant text-[11px] uppercase tracking-widest px-3 py-1 rounded">completado</span>
+      </div>
+      <div class="w-full md:w-1/2 md:pl-16">
+        <div class="bg-surface border border-border-muted rounded-lg overflow-hidden hover:border-primary/40 transition-colors">
+          <div class="bg-surface-high border-b border-border-muted px-4 py-2 flex items-center gap-3">
+            <div class="flex gap-1.5">
+              <div class="w-2.5 h-2.5 rounded-full bg-border-muted"></div>
+              <div class="w-2.5 h-2.5 rounded-full bg-border-muted"></div>
+              <div class="w-2.5 h-2.5 rounded-full bg-border-muted"></div>
+            </div>
+            <span class="text-[12px] text-on-surface-variant">&gt; gfi_automation_eng.sh</span>
+          </div>
+          <ul class="p-6 space-y-4 text-[15px]">
+            <li class="flex gap-3 items-start"><span class="text-primary font-bold">&gt;</span><span>Construcción de frameworks de automatización con Selenium WebDriver y Python.</span></li>
+            <li class="flex gap-3 items-start"><span class="text-primary font-bold">&gt;</span><span>Evaluación de Katalon Studio como solución low-code.</span></li>
+            <li class="flex gap-3 items-start"><span class="text-primary font-bold">&gt;</span><span>Pruebas funcionales y de regresión alineadas con ciclos Agile.</span></li>
+            <li class="flex gap-3 items-start"><span class="text-primary font-bold">&gt;</span><span>Gestión de casos de prueba y bugs en JIRA.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="relative w-full flex justify-center mt-4">
+      <span class="text-[12px] text-on-surface-variant/60 uppercase tracking-widest">[ fin del registro ]</span>
+    </div>
+  </div>
+
+</main>
+
+<!-- ============ FOOTER (compartido) ============ -->
+<footer class="border-t border-border-muted py-8 px-6 md:px-10 bg-[#0e0e0f]">
+  <div class="max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+    <div class="flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-primary"></span>
+      <span class="text-[13px] text-on-surface-variant">Todos los sistemas operativos</span>
+    </div>
+    <div class="flex gap-6 text-[12px] uppercase tracking-widest">
+      <a class="text-on-surface-variant hover:text-primary transition-colors" href="mailto:camilo@example.com">email</a>
+      <a class="text-on-surface-variant hover:text-primary transition-colors" href="#">github</a>
+      <a class="text-on-surface-variant hover:text-primary transition-colors" href="#">linkedin</a>
+    </div>
+    <div class="text-[11px] text-on-surface-variant/60">© 2026 Camilo — QA Automation</div>
+  </div>
+</footer>
+
+<script>
+  const toggle = document.getElementById('safe-mode-toggle');
+  toggle.addEventListener('click', () => {
+    const active = document.documentElement.classList.toggle('safe-mode');
+    toggle.textContent = active ? 'safe_mode: on' : 'safe_mode: off';
+    toggle.setAttribute('aria-pressed', active);
+  });
+</script>
+</body>
+</html>

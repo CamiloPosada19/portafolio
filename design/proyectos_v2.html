@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proyectos — Camilo · QA Automation</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700&display=block" rel="stylesheet">
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "background": "#131314",
+          "surface": "#161617",
+          "surface-high": "#2a2a2b",
+          "border-muted": "#2A2A2B",
+          "primary": "#00ff41",
+          "primary-dim": "#00e639",
+          "glitch-cyan": "#00F0FF",
+          "on-surface": "#e5e2e3",
+          "on-surface-variant": "#b9ccb2",
+          "terminal-text": "#E0E0E0"
+        },
+        fontFamily: {
+          "display": ["Space Grotesk", "sans-serif"],
+          "mono": ["JetBrains Mono", "monospace"]
+        }
+      }
+    }
+  }
+</script>
+<style>
+  body {
+    background-color: #131314;
+    background-image:
+      linear-gradient(0deg, transparent 24%, rgba(0, 255, 65, 0.025) 25%, rgba(0, 255, 65, 0.025) 26%, transparent 27%, transparent 74%, rgba(0, 255, 65, 0.025) 75%, rgba(0, 255, 65, 0.025) 76%, transparent 77%, transparent),
+      linear-gradient(90deg, transparent 24%, rgba(0, 255, 65, 0.025) 25%, rgba(0, 255, 65, 0.025) 26%, transparent 27%, transparent 74%, rgba(0, 255, 65, 0.025) 75%, rgba(0, 255, 65, 0.025) 76%, transparent 77%, transparent);
+    background-size: 30px 30px;
+  }
+
+  .blink-cursor {
+    animation: blink 1.2s step-end infinite;
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  .safe-mode *,
+  .safe-mode *::before,
+  .safe-mode *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .safe-mode body {
+    background-image: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+</style>
+</head>
+<body class="text-on-surface min-h-screen flex flex-col font-mono text-[16px] leading-relaxed overflow-x-hidden selection:bg-primary selection:text-black">
+
+<!-- ============ NAV (compartida) ============ -->
+<nav class="fixed top-0 w-full z-50 bg-background/85 backdrop-blur-md border-b border-border-muted">
+  <div class="flex justify-between items-center max-w-[1200px] mx-auto px-6 md:px-10 h-16">
+    <a href="inicio_v2.html" class="font-display font-bold text-lg tracking-tight">
+      <span class="text-glitch-cyan">CAMILO</span><span class="text-on-surface-variant opacity-50">://</span><span class="text-primary">QA</span>
+    </a>
+    <div class="hidden md:flex items-center gap-8 text-[13px] uppercase tracking-widest">
+      <a class="text-on-surface-variant hover:text-primary transition-colors" href="inicio_v2.html">&gt; inicio</a>
+      <a class="text-on-surface-variant hover:text-primary transition-colors" href="experiencia_v2.html">&gt; experiencia</a>
+      <a class="text-primary border-b-2 border-primary pb-1" href="proyectos_v2.html">&gt; proyectos</a>
+      <a class="text-on-surface-variant hover:text-primary transition-colors" href="mailto:camilo@example.com">&gt; contacto</a>
+    </div>
+    <div class="flex items-center gap-3">
+      <button id="safe-mode-toggle" aria-pressed="false" title="Desactiva todas las animaciones"
+        class="text-[11px] uppercase tracking-widest border border-border-muted text-on-surface-variant px-3 py-1.5 rounded hover:border-primary hover:text-primary transition-colors">
+        safe_mode: off
+      </button>
+      <a href="#" download class="hidden md:inline-flex items-center gap-2 bg-primary text-black text-[12px] font-bold uppercase tracking-widest px-4 py-2 rounded hover:bg-primary-dim transition-colors">
+        <span class="material-symbols-outlined text-[16px]">download</span> CV
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="flex-grow pt-28 pb-24 px-6 md:px-10 max-w-[1200px] mx-auto w-full">
+
+  <header class="mb-14 border-b border-border-muted pb-8">
+    <h1 class="font-display font-bold text-4xl md:text-5xl text-primary mb-4">
+      &gt; proyectos <span aria-hidden="true" class="inline-block w-4 h-[0.9em] bg-primary align-middle blink-cursor ml-1"></span>
+    </h1>
+    <p class="text-[14px] text-on-surface-variant max-w-2xl">
+      Frameworks de automatización y utilidades de testing construidos fuera del horario laboral. Cada proyecto enlaza a su repositorio con documentación y pipelines de CI.
+    </p>
+  </header>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+    <!-- Proyecto 1: Cypress -->
+    <article class="bg-surface border border-border-muted rounded-lg overflow-hidden flex flex-col hover:border-primary/60 transition-colors">
+      <div class="bg-surface-high border-b border-border-muted px-4 py-2 flex items-center justify-between">
+        <div class="flex gap-2">
+          <div class="w-2.5 h-2.5 rounded-full bg-border-muted"></div>
+          <div class="w-2.5 h-2.5 rounded-full bg-border-muted"></div>
+          <div class="w-2.5 h-2.5 rounded-full bg-border-muted"></div>
+        </div>
+        <span class="text-[12px] text-on-surface-variant">cypress_framework.log</span>
+      </div>
+      <div class="p-6 flex-grow flex flex-col">
+        <h2 class="font-display font-semibold text-xl mb-2">Cypress Framework</h2>
+        <p class="text-[14px] text-on-surface-variant mb-6 flex-grow">
+          Framework de pruebas E2E para aplicaciones web modernas, con BDD para especificaciones legibles por negocio.
+        </p>
+        <div class="flex flex-wrap gap-2 mb-6">
+          <span class="px-2 py-1 border border-border-muted rounded text-[11px] uppercase tracking-widest text-terminal-text bg-background">Cypress</span>
+          <span class="px-2 py-1 border border-border-muted rounded text-[11px] uppercase tracking-widest text-terminal-text bg-background">JS</span>
+          <span class="px-2 py-1 border border-border-muted rounded text-[11px] uppercase tracking-widest text-terminal-text bg-background">Cucumber</span>
+        </div>
+        <div class="flex justify-between items-center border-t border-border-muted pt-4 mt-auto">
+          <span class="text-[12px] text-on-surface-variant flex items-center gap-1">
+            <span class="material-symbols-outlined text-[16px]">commit</span> 24a8f9c
+          </span>
+          <a href="#" class="bg-primary text-black text-[12px] font-bold uppercase tracking-widest px-4 py-2 rounded hover:bg-primary-dim transition-colors inline-flex items-center gap-2">
+            <span class="material-symbols-outlined text-[16px]">code</span> Ver repo
+          </a>
+        </div>
+      </div>
+    </article>
+
+    <!-- Proyecto 2: Playwright -->
+    <article class="bg-surface border border-border-muted rounded-lg overflow-hidden flex flex-col hover:border-primary/60 transition-colors">
+      <div class="bg-surface-high border-b border-border-muted px-4 py-2 flex items-center justify-between">
+        <div class="flex gap-2">
+          <div class="w-2.5 h-2.5 rounded-full bg-border-muted"></div>
+          <div class="w-2.5 h-2.5 rounded-full bg-border-muted"></div>
+          <div class="w-2.5 h-2.5 rounded-full bg-border-muted"></div>
+        </div>
+        <span class="text-[12px] text-on-surface-variant">playwright_framework.log</span>
+      </div>
+      <div class="p-6 flex-grow flex flex-col">
+        <h2 class="font-display font-semibold text-xl mb-2">Playwright Framework</h2>
+        <p class="text-[14px] text-on-surface-variant mb-6 flex-grow">
+          Suite de automatización multiplataforma de alta velocidad, con auto-waiting y aserciones web-first para máxima resiliencia.
+        </p>
+        <div class="flex flex-wrap gap-2 mb-6">
+          <span class="px-2 py-1 border border-border-muted rounded text-[11px] uppercase tracking-widest text-terminal-text bg-background">Playwright</span>
+          <span class="px-2 py-1 border border-border-muted rounded text-[11px] uppercase tracking-widest text-terminal-text bg-background">TS</span>
+          <span class="px-2 py-1 border border-border-muted rounded text-[11px] uppercase tracking-widest text-terminal-text bg-background">Cucumber</span>
+        </div>
+        <div class="flex justify-between items-center border-t border-border-muted pt-4 mt-auto">
+          <span class="text-[12px] text-on-surface-variant flex items-center gap-1">
+            <span class="material-symbols-outlined text-[16px]">commit</span> 8b3e2d1
+          </span>
+          <a href="#" class="bg-primary text-black text-[12px] font-bold uppercase tracking-widest px-4 py-2 rounded hover:bg-primary-dim transition-colors inline-flex items-center gap-2">
+            <span class="material-symbols-outlined text-[16px]">code</span> Ver repo
+          </a>
+        </div>
+      </div>
+    </article>
+
+    <!-- Proyecto 3: Karate (ya no rojo) -->
+    <article class="bg-surface border border-border-muted rounded-lg overflow-hidden flex flex-col hover:border-primary/60 transition-colors">
+      <div class="bg-surface-high border-b border-border-muted px-4 py-2 flex items-center justify-between">
+        <div class="flex gap-2">
+          <div class="w-2.5 h-2.5 rounded-full bg-border-muted"></div>
+          <div class="w-2.5 h-2.5 rounded-full bg-border-muted"></div>
+          <div class="w-2.5 h-2.5 rounded-full bg-border-muted"></div>
+        </div>
+        <span class="text-[12px] text-on-surface-variant">karate_dsl.log</span>
+      </div>
+      <div class="p-6 flex-grow flex flex-col">
+        <h2 class="font-display font-semibold text-xl mb-2">Karate DSL Framework</h2>
+        <p class="text-[14px] text-on-surface-variant mb-6 flex-grow">
+          Framework unificado de pruebas de API, mocks y rendimiento, con Gatling para métricas de carga.
+        </p>
+        <div class="flex flex-wrap gap-2 mb-6">
+          <span class="px-2 py-1 border border-border-muted rounded text-[11px] uppercase tracking-widest text-terminal-text bg-background">Karate DSL</span>
+          <span class="px-2 py-1 border border-border-muted rounded text-[11px] uppercase tracking-widest text-terminal-text bg-background">Java</span>
+          <span class="px-2 py-1 border border-border-muted rounded text-[11px] uppercase tracking-widest text-terminal-text bg-background">Gatling</span>
+        </div>
+        <div class="flex justify-between items-center border-t border-border-muted pt-4 mt-auto">
+          <span class="text-[12px] text-on-surface-variant flex items-center gap-1">
+            <span class="material-symbols-outlined text-[16px]">commit</span> 1c9f45a
+          </span>
+          <a href="#" class="bg-primary text-black text-[12px] font-bold uppercase tracking-widest px-4 py-2 rounded hover:bg-primary-dim transition-colors inline-flex items-center gap-2">
+            <span class="material-symbols-outlined text-[16px]">code</span> Ver repo
+          </a>
+        </div>
+      </div>
+    </article>
+
+    <!-- Proyecto 4: Selenium -->
+    <article class="bg-surface border border-border-muted rounded-lg overflow-hidden flex flex-col hover:border-primary/60 transition-colors">
+      <div class="bg-surface-high border-b border-border-muted px-4 py-2 flex items-center justify-between">
+        <div class="flex gap-2">
+          <div class="w-2.5 h-2.5 rounded-full bg-border-muted"></div>
+          <div class="w-2.5 h-2.5 rounded-full bg-border-muted"></div>
+          <div class="w-2.5 h-2.5 rounded-full bg-border-muted"></div>
+        </div>
+        <span class="text-[12px] text-on-surface-variant">selenium_python.log</span>
+      </div>
+      <div class="p-6 flex-grow flex flex-col">
+        <h2 class="font-display font-semibold text-xl mb-2">Selenium + Python</h2>
+        <p class="text-[14px] text-on-surface-variant mb-6 flex-grow">
+          Automatización web con Selenium WebDriver, Python y Behave para integración BDD completa.
+        </p>
+        <div class="flex flex-wrap gap-2 mb-6">
+          <span class="px-2 py-1 border border-border-muted rounded text-[11px] uppercase tracking-widest text-terminal-text bg-background">Selenium</span>
+          <span class="px-2 py-1 border border-border-muted rounded text-[11px] uppercase tracking-widest text-terminal-text bg-background">Python</span>
+          <span class="px-2 py-1 border border-border-muted rounded text-[11px] uppercase tracking-widest text-terminal-text bg-background">Behave</span>
+        </div>
+        <div class="flex justify-between items-center border-t border-border-muted pt-4 mt-auto">
+          <span class="text-[12px] text-on-surface-variant flex items-center gap-1">
+            <span class="material-symbols-outlined text-[16px]">commit</span> 5f2d89b
+          </span>
+          <a href="#" class="bg-primary text-black text-[12px] font-bold uppercase tracking-widest px-4 py-2 rounded hover:bg-primary-dim transition-colors inline-flex items-center gap-2">
+            <span class="material-symbols-outlined text-[16px]">code</span> Ver repo
+          </a>
+        </div>
+      </div>
+    </article>
+
+  </div>
+</main>
+
+<!-- ============ FOOTER (compartido) ============ -->
+<footer class="border-t border-border-muted py-8 px-6 md:px-10 bg-[#0e0e0f]">
+  <div class="max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+    <div class="flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-primary"></span>
+      <span class="text-[13px] text-on-surface-variant">Todos los sistemas operativos</span>
+    </div>
+    <div class="flex gap-6 text-[12px] uppercase tracking-widest">
+      <a class="text-on-surface-variant hover:text-primary transition-colors" href="mailto:camilo@example.com">email</a>
+      <a class="text-on-surface-variant hover:text-primary transition-colors" href="#">github</a>
+      <a class="text-on-surface-variant hover:text-primary transition-colors" href="#">linkedin</a>
+    </div>
+    <div class="text-[11px] text-on-surface-variant/60">© 2026 Camilo — QA Automation</div>
+  </div>
+</footer>
+
+<script>
+  const toggle = document.getElementById('safe-mode-toggle');
+  toggle.addEventListener('click', () => {
+    const active = document.documentElement.classList.toggle('safe-mode');
+    toggle.textContent = active ? 'safe_mode: on' : 'safe_mode: off';
+    toggle.setAttribute('aria-pressed', active);
+  });
+</script>
+</body>
+</html>
