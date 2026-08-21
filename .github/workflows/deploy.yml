@@ -16,12 +16,42 @@ jobs:
     steps:
       - name: Checkout your repository
         uses: actions/checkout@v4
-      - name: Install, build, and upload your site
-        uses: withastro/action@v3
+      
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@v4
+        
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: 22
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+        
+      - name: Build with Astro
+        run: npm run build
+        
+      - name: Run Playwright tests
+        run: npx playwright test
+        
+      - name: Merge Test Report into dist
+        if: always()
+        run: |
+          mkdir -p dist/reporte
+          cp -r playwright-report/* dist/reporte/ || true
+          
+      - name: Upload artifact
+        if: always()
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
 
   deploy:
+    if: always()
     needs: build
     runs-on: ubuntu-latest
     environment:
