@@ -9,7 +9,7 @@ const allExperience = await getCollection('experience');
 // Orden manual basado en la línea de tiempo real
 const order = ['cognizant', 'signaturit', 'qaracter', 'inetum', 'gfi'];
 const sortedExperience = allExperience.sort((a, b) => {
-  return order.indexOf(a.slug) - order.indexOf(b.slug);
+  return order.indexOf(a.id) - order.indexOf(b.id);
 });
 ---
 
