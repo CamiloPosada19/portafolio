@@ -1,0 +1,79 @@
+---
+interface Props {
+  title: string;
+  company: string;
+  location?: string;
+  startDate: string;
+  endDate: string;
+  technologies: string[];
+  index: number;
+  slug: string;
+}
+
+const { title, company, location, startDate, endDate, technologies, index, slug } = Astro.props;
+
+const isEven = index % 2 === 0;
+// If even, flex-row (left to right). If odd, flex-row-reverse.
+const containerClasses = `relative w-full flex flex-col ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} items-center mb-20`;
+const infoClasses = `w-full md:w-1/2 ${isEven ? 'md:pr-16 text-center md:text-right flex flex-col items-center md:items-end' : 'md:pl-16 text-center md:text-left flex flex-col items-center md:items-start'} mb-8 md:mb-0`;
+const terminalClasses = `w-full md:w-1/2 ${isEven ? 'md:pl-16' : 'md:pr-16'}`;
+const isActive = slug === 'cognizant';
+---
+
+<div class={containerClasses}>
+  <!-- Nodo Central -->
+  <div class={`hidden md:block absolute left-1/2 top-1/2 w-3 h-3 rounded-full transform -translate-x-1/2 -translate-y-1/2 z-10 ${isActive ? 'bg-[var(--color-primary)] shadow-[0_0_8px_var(--color-primary)]' : 'bg-[var(--color-surface-high)] border-2 border-[var(--color-border-muted)]'}`}></div>
+  
+  <!-- Info (Empresa, fechas, tags) -->
+  <div class={infoClasses}>
+    <h3 class="font-display font-bold text-2xl md:text-3xl mb-2">{company}</h3>
+    <p class={`text-[13px] mb-4 ${isActive ? 'text-[var(--color-glitch-cyan)]' : 'text-[var(--color-on-surface-variant)]'}`}>
+      [ {startDate} – {endDate} {location ? `| ${location}` : ''} ]
+    </p>
+    
+    <div class={`flex gap-3 flex-wrap ${isEven ? 'justify-center md:justify-end' : 'justify-center md:justify-start'}`}>
+      {isActive ? (
+        <>
+          <span class="border border-[var(--color-primary)] text-[var(--color-primary)] text-[11px] uppercase tracking-widest px-3 py-1 bg-[var(--color-primary)]/10 rounded">en curso</span>
+          <span class="border border-[var(--color-accent-warm)]/60 text-[var(--color-accent-warm)] text-[11px] uppercase tracking-widest px-3 py-1 rounded">IA aplicada</span>
+        </>
+      ) : (
+        <span class="border border-[var(--color-border-muted)] text-[var(--color-on-surface-variant)] text-[11px] uppercase tracking-widest px-3 py-1 rounded">completado</span>
+      )}
+    </div>
+  </div>
+
+  <!-- Terminal Content -->
+  <div class={terminalClasses}>
+    <div class={`bg-[var(--color-surface)] border rounded-lg overflow-hidden transition-colors ${isActive ? 'border-[var(--color-primary)]/50 shadow-[0_0_15px_rgba(0,255,65,0.15)]' : 'border-[var(--color-border-muted)] hover:border-[var(--color-primary)]/40'}`}>
+      <!-- Terminal Header -->
+      <div class="bg-[var(--color-surface-high)] border-b border-[var(--color-border-muted)] px-4 py-2 flex items-center gap-3">
+        <div class="flex gap-1.5">
+          {isActive ? (
+            <>
+              <div class="w-2.5 h-2.5 rounded-full bg-[#ff5f57]"></div>
+              <div class="w-2.5 h-2.5 rounded-full bg-[#febc2e]"></div>
+              <div class="w-2.5 h-2.5 rounded-full bg-[#28c840]"></div>
+            </>
+          ) : (
+            <>
+              <div class="w-2.5 h-2.5 rounded-full bg-[var(--color-border-muted)]"></div>
+              <div class="w-2.5 h-2.5 rounded-full bg-[var(--color-border-muted)]"></div>
+              <div class="w-2.5 h-2.5 rounded-full bg-[var(--color-border-muted)]"></div>
+            </>
+          )}
+        </div>
+        <span class="text-[12px] text-[var(--color-on-surface-variant)]">&gt; {slug}.sh</span>
+      </div>
+      
+      <!-- Content / Bullet points -->
+      <div class="p-6 text-[15px] text-[var(--color-on-surface)]
+                  [&_ul]:list-none [&_ul]:p-0 [&_ul]:m-0 [&_ul]:flex [&_ul]:flex-col [&_ul]:gap-4
+                  [&_li]:flex [&_li]:gap-3 [&_li]:items-start
+                  [&_li::before]:content-['>'] [&_li::before]:text-[var(--color-primary)] [&_li::before]:font-bold [&_li::before]:flex-shrink-0
+                  [&_p]:m-0 w-full">
+        <slot />
+      </div>
+    </div>
+  </div>
+</div>
