@@ -1,5 +1,7 @@
 ---
 import '../styles/global.css';
+import Navbar from '../components/shared/Navbar.astro';
+import Footer from '../components/shared/Footer.astro';
 
 interface Props {
   title: string;
@@ -38,6 +40,25 @@ const { title } = Astro.props;
     </script>
   </head>
   <body class="text-on-surface min-h-screen font-mono text-[16px] leading-relaxed overflow-x-hidden selection:bg-primary selection:text-black">
+    <Navbar />
     <slot />
+    <Footer />
+
+    <script>
+      const toggle = document.getElementById('safe-mode-toggle');
+      if (toggle) {
+        // Init toggle state from class
+        const isActive = document.documentElement.classList.contains('safe-mode');
+        toggle.textContent = isActive ? 'safe_mode: on' : 'safe_mode: off';
+        toggle.setAttribute('aria-pressed', isActive.toString());
+
+        toggle.addEventListener('click', () => {
+          const active = document.documentElement.classList.toggle('safe-mode');
+          toggle.textContent = active ? 'safe_mode: on' : 'safe_mode: off';
+          toggle.setAttribute('aria-pressed', active.toString());
+          localStorage.setItem('safeMode', active.toString());
+        });
+      }
+    </script>
   </body>
 </html>
