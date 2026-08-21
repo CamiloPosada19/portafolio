@@ -1,0 +1,138 @@
+---
+// StackPanel.astro
+import { stackData, getCategoryColor } from '../../data/stack';
+---
+
+<section id="stack" class="mb-20">
+  <h2 class="font-display font-semibold text-2xl mb-6 border-b border-border-muted pb-4 flex items-center gap-3">
+    <span class="material-symbols-outlined text-primary">construction</span>
+    stack_principal
+  </h2>
+
+  <div class="flex items-center gap-2 overflow-x-auto pb-2 mb-3" role="group" aria-label="Filtrar tecnologías">
+    <span class="text-[12px] text-on-surface-variant uppercase tracking-widest shrink-0">&gt; filtrar:</span>
+    <button class="filter-btn active" data-filter="todos" style="--accent:#00ff41">todos</button>
+    <button class="filter-btn" data-filter="frontend" style="--accent:#00ff41">frontend</button>
+    <button class="filter-btn" data-filter="backend" style="--accent:#00F0FF">backend</button>
+    <button class="filter-btn" data-filter="ia" style="--accent:#e7bf99">ia</button>
+  </div>
+  <p id="filter-count" class="text-[11px] text-on-surface-variant/70 mb-6 uppercase tracking-widest">
+    &gt; mostrando {stackData.length} nodos
+  </p>
+
+  <div id="stack-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+    {stackData.map((skill) => (
+      <div 
+        class="skill-card relative bg-surface border border-border-muted rounded p-5" 
+        data-category={skill.categories.join(' ')} 
+        style={`--accent:${getCategoryColor(skill.categories[0])}`}
+      >
+        <div class="absolute top-2 right-2 flex gap-1">
+          {skill.categories.map((cat) => (
+            <span class="w-1.5 h-1.5 rounded-full" style={`background:${getCategoryColor(cat)}`} title={cat}></span>
+          ))}
+        </div>
+        <div class="flex flex-col items-center text-center gap-2">
+          <span class="material-symbols-outlined text-3xl text-on-surface-variant">{skill.icon}</span>
+          <h3 class="text-[13px] font-bold uppercase tracking-widest">{skill.name}</h3>
+          <p class="text-[11px] text-on-surface-variant">{skill.description}</p>
+          <div class="w-full h-1 bg-surface-high rounded overflow-hidden mt-1">
+            <div class="bar-fill h-full rounded" style={`--target:${skill.percentage}%`}></div>
+          </div>
+          <span class="bar-pct text-[11px] tracking-widest" data-target={skill.percentage}>0%</span>
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
+
+<script>
+  function initStackPanel() {
+    const stack = document.getElementById('stack');
+    if (!stack) return;
+    
+    // BARS ANIMATION
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function setBarsInstant() {
+      document.querySelectorAll('.bar-pct').forEach((el: any) => {
+        el.textContent = el.dataset.target + '%';
+      });
+    }
+
+    function animateBars() {
+      stack!.classList.add('bars-animated');
+      document.querySelectorAll('.bar-pct').forEach((el: any) => {
+        const target = +el.dataset.target;
+        const duration = 1400;
+        const start = performance.now();
+        (function tick(now) {
+          const p = Math.min((now - start) / duration, 1);
+          el.textContent = Math.round(target * p) + '%';
+          if (p < 1) requestAnimationFrame(tick);
+        })(start);
+      });
+    }
+
+    if (reduceMotion || document.documentElement.classList.contains('safe-mode')) {
+      stack.classList.add('bars-animated');
+      setBarsInstant();
+    } else {
+      const io = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) {
+          if (document.documentElement.classList.contains('safe-mode')) {
+            setBarsInstant();
+          } else {
+            animateBars();
+          }
+          io.disconnect();
+        }
+      }, { threshold: 0.3 });
+      io.observe(stack);
+    }
+    
+    window.addEventListener('safemodechange', (e: any) => {
+      if (e.detail.active) {
+         setBarsInstant();
+      }
+    });
+
+    // FILTER LOGIC
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const cards = document.querySelectorAll('.skill-card');
+    const filterCount = document.getElementById('filter-count');
+
+    filterBtns.forEach(btn => {
+      // Remove old listeners to prevent duplicates if ViewTransitions is added later
+      const newBtn = btn.cloneNode(true);
+      btn.parentNode?.replaceChild(newBtn, btn);
+      
+      newBtn.addEventListener('click', (e: any) => {
+        const clickedBtn = e.currentTarget;
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        clickedBtn.classList.add('active');
+        
+        const cat = clickedBtn.dataset.filter;
+        let visible = 0;
+        
+        cards.forEach((card: any) => {
+          const match = cat === 'todos' || card.dataset.category.split(' ').includes(cat);
+          if (match) {
+            visible++;
+            card.classList.remove('hidden');
+            void card.offsetWidth; // reset reflow for transition
+            card.classList.remove('card-fade');
+          } else {
+            card.classList.add('card-fade');
+            setTimeout(() => {
+              if (card.classList.contains('card-fade')) card.classList.add('hidden');
+            }, 200);
+          }
+        });
+        if (filterCount) filterCount.textContent = '> mostrando ' + visible + ' nodos';
+      });
+    });
+  }
+
+  initStackPanel();
+</script>

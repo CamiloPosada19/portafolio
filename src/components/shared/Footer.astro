@@ -1,0 +1,18 @@
+---
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="border-t border-border-muted py-8 px-6 md:px-10 bg-[#0e0e0f]">
+  <div class="max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+    <div class="flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-primary"></span>
+      <span class="text-[13px] text-on-surface-variant">Todos los sistemas operativos</span>
+    </div>
+    <div class="flex gap-6 text-[12px] uppercase tracking-widest">
+      <a class="text-on-surface-variant hover:text-primary transition-colors" href="mailto:camilo@example.com">email</a>
+      <a class="text-on-surface-variant hover:text-primary transition-colors" href="#">github</a>
+      <a class="text-on-surface-variant hover:text-primary transition-colors" href="#">linkedin</a>
+    </div>
+    <div class="text-[11px] text-on-surface-variant/60">© {currentYear} Camilo — QA Automation</div>
+  </div>
+</footer>
