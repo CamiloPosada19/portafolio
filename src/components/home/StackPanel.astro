@@ -3,7 +3,7 @@
 import { stackData, getCategoryColor } from '../../data/stack';
 ---
 
-<section id="stack" class="mb-20">
+<section id="stack" data-testid="home-stack-panel" class="mb-20">
   <h2 class="font-display font-semibold text-2xl mb-6 border-b border-border-muted pb-4 flex items-center gap-3">
     <span class="material-symbols-outlined text-primary">construction</span>
     stack_principal
@@ -25,6 +25,7 @@ import { stackData, getCategoryColor } from '../../data/stack';
       <div 
         class="skill-card relative bg-surface border border-border-muted rounded p-5" 
         data-category={skill.categories.join(' ')} 
+        data-testid="home-skill-card"
         style={`--accent:${getCategoryColor(skill.categories[0])}`}
       >
         <div class="absolute top-2 right-2 flex gap-1">
@@ -36,10 +37,10 @@ import { stackData, getCategoryColor } from '../../data/stack';
           <span class="material-symbols-outlined text-3xl text-on-surface-variant">{skill.icon}</span>
           <h3 class="text-[13px] font-bold uppercase tracking-widest">{skill.name}</h3>
           <p class="text-[11px] text-on-surface-variant">{skill.description}</p>
-          <div class="w-full h-1 bg-surface-high rounded overflow-hidden mt-1">
-            <div class="bar-fill h-full rounded" style={`--target:${skill.percentage}%`}></div>
+          <div class="w-full h-1 bg-surface-high rounded overflow-hidden mt-1" data-testid="home-skill-bar-container">
+            <div class="bar-fill h-full rounded" style={`--target:${skill.percentage}%`} data-testid="home-skill-bar"></div>
           </div>
-          <span class="bar-pct text-[11px] tracking-widest" data-target={skill.percentage}>0%</span>
+          <span class="bar-pct text-[11px] tracking-widest" data-target={skill.percentage} data-testid="home-skill-pct">0%</span>
         </div>
       </div>
     ))}

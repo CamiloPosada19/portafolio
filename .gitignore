@@ -25,3 +25,5 @@ pnpm-debug.log*
 
 # epics
 Epic/
+playwright-report/
+test-results/
