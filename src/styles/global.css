@@ -1,0 +1,124 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #131314;
+  --color-surface: #161617;
+  --color-surface-high: #2a2a2b;
+  --color-border-muted: #2a2a2b;
+  --color-primary: #00ff41;
+  --color-primary-dim: #00e639;
+  --color-glitch-cyan: #00f0ff;
+  --color-on-surface: #e5e2e3;
+  --color-on-surface-variant: #b9ccb2;
+  --color-terminal-text: #e0e0e0;
+
+  --font-display: "Space Grotesk", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
+body {
+  background-color: var(--color-background);
+  background-image:
+    linear-gradient(0deg, transparent 24%, rgba(0, 255, 65, 0.025) 25%, rgba(0, 255, 65, 0.025) 26%, transparent 27%, transparent 74%, rgba(0, 255, 65, 0.025) 75%, rgba(0, 255, 65, 0.025) 76%, transparent 77%, transparent),
+    linear-gradient(90deg, transparent 24%, rgba(0, 255, 65, 0.025) 25%, rgba(0, 255, 65, 0.025) 26%, transparent 27%, transparent 74%, rgba(0, 255, 65, 0.025) 75%, rgba(0, 255, 65, 0.025) 76%, transparent 77%, transparent);
+  background-size: 30px 30px;
+}
+
+/* Unico efecto protagonista: cursor de terminal en el titular */
+.blink-cursor::after {
+  content: '_';
+  animation: blink 1.2s step-end infinite;
+  color: var(--color-primary);
+  margin-left: 4px;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* Foto: escaner horizontal que revela el color (una sola vez) */
+.portrait-gray { filter: grayscale(90%) contrast(112%); }
+.portrait-color { clip-path: inset(0 0 100% 0); }
+.scan-line {
+  position: absolute;
+  left: 0; right: 0; top: 0;
+  height: 2px;
+  background: var(--color-primary);
+  box-shadow: 0 0 12px var(--color-primary), 0 0 24px rgba(0, 255, 65, 0.5);
+  opacity: 0;
+}
+.scanning .portrait-color {
+  clip-path: inset(0 0 0 0);
+  transition: clip-path 2.4s linear;
+}
+.scanning .scan-line {
+  opacity: 1;
+  animation: scan-move 2.4s linear forwards;
+}
+@keyframes scan-move {
+  from { top: 0; }
+  to { top: calc(100% - 2px); }
+}
+.scan-done .portrait-color { clip-path: inset(0 0 0 0); }
+.scan-done .scan-line { opacity: 0; transition: opacity 0.4s ease; animation: none; }
+
+/* Barras de nivel: cargan al entrar en pantalla */
+.bar-fill { width: 0; }
+.bars-animated .bar-fill { animation: fill-bar 1.4s ease-out forwards; }
+@keyframes fill-bar { to { width: var(--target); } }
+
+/* Filtros */
+.filter-btn {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 6px 14px;
+  border: 1px solid var(--color-border-muted);
+  border-radius: 9999px;
+  color: var(--color-on-surface-variant);
+  background: var(--color-surface);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+.filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+.filter-btn.active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #131314;
+  font-weight: 700;
+}
+
+/* Cards del stack con acento por categoria */
+.skill-card { transition: opacity 0.2s ease, transform 0.2s ease, border-color 0.2s ease; }
+.skill-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+.skill-card .bar-fill { background: var(--accent); }
+.skill-card .bar-pct { color: var(--accent); }
+.skill-card.card-fade { opacity: 0; transform: scale(0.96); }
+
+/* SAFE_MODE: apaga todas las animaciones y transiciones */
+.safe-mode *,
+.safe-mode *::before,
+.safe-mode *::after {
+  animation: none !important;
+  transition: none !important;
+}
+.safe-mode body {
+  background-image: none;
+}
+.safe-mode .bar-fill {
+  width: var(--target);
+}
+.safe-mode .portrait-color { clip-path: inset(0 0 0 0) !important; }
+.safe-mode .scan-line { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .bar-fill { width: var(--target) !important; }
+  .portrait-color { clip-path: inset(0 0 0 0) !important; }
+  .scan-line { display: none; }
+}
