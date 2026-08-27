@@ -32,6 +32,9 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
         
+      - name: Create .env file for Astro
+        run: echo "PUBLIC_MIXPANEL_TOKEN=${{ secrets.PUBLIC_MIXPANEL_TOKEN }}" > .env
+
       - name: Build with Astro
         run: npm run build
         env:
