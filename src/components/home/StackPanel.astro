@@ -11,10 +11,10 @@ import { stackData, getCategoryColor } from '../../data/stack';
 
   <div class="flex items-center gap-2 overflow-x-auto pb-2 mb-3" role="group" aria-label="Filtrar tecnologías">
     <span class="text-[12px] text-on-surface-variant uppercase tracking-widest shrink-0">&gt; filtrar:</span>
-    <button class="filter-btn active" data-filter="todos" style="--accent:#00ff41">todos</button>
-    <button class="filter-btn" data-filter="frontend" style="--accent:#00ff41">frontend</button>
-    <button class="filter-btn" data-filter="backend" style="--accent:#00F0FF">backend</button>
-    <button class="filter-btn" data-filter="ia" style="--accent:#e7bf99">ia</button>
+    <button class="filter-btn active" data-filter="todos" data-track="Filter Click" data-track-props='{"filter": "todos", "section": "stack"}' style="--accent:#00ff41">todos</button>
+    <button class="filter-btn" data-filter="frontend" data-track="Filter Click" data-track-props='{"filter": "frontend", "section": "stack"}' style="--accent:#00ff41">frontend</button>
+    <button class="filter-btn" data-filter="backend" data-track="Filter Click" data-track-props='{"filter": "backend", "section": "stack"}' style="--accent:#00F0FF">backend</button>
+    <button class="filter-btn" data-filter="ia" data-track="Filter Click" data-track-props='{"filter": "ia", "section": "stack"}' style="--accent:#e7bf99">ia</button>
   </div>
   <p id="filter-count" class="text-[11px] text-on-surface-variant/70 mb-6 uppercase tracking-widest">
     &gt; mostrando {stackData.length} nodos
