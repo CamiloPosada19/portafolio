@@ -81,6 +81,12 @@ const { title } = Astro.props;
           api_host: "https://api-eu.mixpanel.com"
         });
 
+        // Crear perfil de usuario para visitantes anónimos
+        mixpanel.people.set_once({
+          "First Seen Date": new Date().toISOString(),
+          "Visitor Type": "Anonymous Portfolio Visitor"
+        });
+
         // Global click listener for data-track attributes
         document.addEventListener('click', (e) => {
           const trackableElement = e.target.closest('[data-track]');
